@@ -36,12 +36,12 @@ export default function App() {
 
           <CustomButton
             title="Continue with Email"
-            handlePress={() => router.push('sign-in')}
+            handlePress={() => router.push("sign-in")}
             containerStyles="w-full mt-7"
           ></CustomButton>
         </View>
       </ScrollView>
-      <StatusBar backgroundColor="#161622" style="light"/>
+      <StatusBar backgroundColor="#161622" style="light" />
     </SafeAreaView>
   );
 }
