@@ -6,16 +6,57 @@ import FormField from "../../components/FormField";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import { Link } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import { API_URL } from "@env";
+
+console.log(API_URL); // Logs the value of API_URL
 
 const SignUp = () => {
   const [form, setForm] = useState({
-    username:"",
+    username: "",
     email: "",
     password: "",
   });
 
+  const navigation = useNavigation();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const submit = () => {};
+
+  const submit = async () => {
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(`${API_URL}/api/auth/register`, form, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 201) {
+        alert(response.data.message);
+        setForm({
+          username: "",
+          email: "",
+          password: "",
+        });
+        navigation.navigate("sign-in");
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      if (error.response) {
+        alert(`Error: ${error.response.data.message}`);
+      } else if (error.request) {
+        alert("No response received from server.");
+      } else {
+        alert("Error: " + error.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView>
@@ -48,17 +89,22 @@ const SignUp = () => {
             otherStyles="mt-7"
           />
           <CustomButton
-            title="Sign In"
+            title="Sign Up"
             handlePress={submit}
             containerStyles="mt-7"
             isLoading={isSubmitting}
           />
 
           <View className="justify-center pt-5 flex-row gap-2">
-            <Text className='text-lg text-gray-100 font-pregular'>
+            <Text className="text-lg text-gray-100 font-pregular">
               Have an account already?
             </Text>
-            <Link href="/sign-in" className="text-lg font-psemibold text-secondary-100">Sign In</Link>
+            <Link
+              href="/sign-in"
+              className="text-lg font-psemibold text-secondary-100"
+            >
+              Sign In
+            </Link>
           </View>
         </View>
       </ScrollView>
